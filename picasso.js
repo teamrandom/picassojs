@@ -3,25 +3,13 @@ function Picassojs() {
 	var height = window.innerHeight;
 	var width = window.innerWidth;
 
-	function helloResize(event) {
-		
-		var newHeight = event.srcElement.innerHeight;
-		var newWidth = event.srcElement.innerWidth;
-		
-		// because
-		var lumRatio = ( newHeight / height + newWidth / width ) / 2 - 1;
-
-		// brute force: iterate over all elements.
-		var body = document.getElementsByTagName('body')[0];
-		
-		recolorEverything(body, lumRatio);
-		height = newHeight;
-		width = newWidth;
-	}
-
 	function recolorEverything(elem, lumRatio) {
-		var color = window.getComputedStyle(elem).color;
+		var style = window.getComputedStyle(elem);
+		var color = style.color;
+		var backgroundColor = style.backgroundColor;
+
 		elem.style.color = calculateLuminance(rgbToHex(color), lumRatio);	
+		// elem.style.backgroundColor = calculateLuminance(rgbToHex(backgroundColor), (-1) * lumRatio);	
 
 		for (var i = elem.children.length - 1; i >= 0; i--) {
 			var child =	elem.children[i];
@@ -38,7 +26,7 @@ function Picassojs() {
 	    	return (x.length==1) ? "0"+x : x;  //Add zero if we get only one character
 		});
 	
-		return b.join("");
+		return "#" + b.join("");
 	}
 
 	/**
@@ -64,9 +52,30 @@ function Picassojs() {
 		return rgb;
 	}
 
+	function calculateLuminanceRatio(newHeight, newWidth) {
+		return ( newHeight / height + newWidth / width ) / 2 - 1;
+	}
+
+	function picasso(newHeight, newWidth) {
+		var lumRatio = calculateLuminanceRatio(newHeight, newWidth);
+
+		// brute force: iterate over all elements.
+		var body = document.getElementsByTagName('body')[0];
+		recolorEverything(body, lumRatio);
+
+		// reset the global variables
+		height = newHeight;
+		width = newWidth;
+	}
+
 	this.control = function () {
-		console.log("this view is now controlled by Picasso.");
-		window.addEventListener("resize", helloResize);
+		console.log("This view is now controlled by Picasso.");
+		window.addEventListener("resize", function(event) {
+			var newHeight = event.srcElement.innerHeight;
+			var newWidth = event.srcElement.innerWidth;
+
+			picasso(newHeight, newWidth);
+		});
 	}
 }
 
