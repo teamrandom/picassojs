@@ -1,11 +1,12 @@
-div h1 {
-	color: red;
-}
-
 div {
 	color: blue;
 }
 
 p {
 	color: yellow;
+}
+
+div h2 {
+	background-color: black;
+	color: white;
 }
