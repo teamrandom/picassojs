@@ -6,10 +6,9 @@ function Picassojs() {
 	function recolorEverything(elem, lumRatio) {
 		var style = window.getComputedStyle(elem);
 		var color = style.color;
-		var backgroundColor = style.backgroundColor;
 
-		elem.style.color = calculateLuminance(rgbToHex(color), lumRatio);	
-		// elem.style.backgroundColor = calculateLuminance(rgbToHex(backgroundColor), (-1) * lumRatio);	
+		elem.style.backupcolor = elem.style.backupcolor ? elem.style.backupcolor : style.color;
+		elem.style.color = calculateLuminance(rgbToHex(elem.style.backupcolor), lumRatio);
 
 		for (var i = elem.children.length - 1; i >= 0; i--) {
 			var child =	elem.children[i];
@@ -61,11 +60,8 @@ function Picassojs() {
 
 		// brute force: iterate over all elements.
 		var body = document.getElementsByTagName('body')[0];
+		
 		recolorEverything(body, lumRatio);
-
-		// reset the global variables
-		height = newHeight;
-		width = newWidth;
 	}
 
 	this.control = function () {
